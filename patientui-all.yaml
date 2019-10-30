@@ -1,0 +1,136 @@
+apiVersion: v1
+items:
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: patientui
+    name: patientui
+    selfLink: /apis/apps.openshift.io/v1/namespaces/health/deploymentconfigs/patientui
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: patientui
+      deploymentconfig: patientui
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftNewApp
+        creationTimestamp: null
+        labels:
+          app: patientui
+          deploymentconfig: patientui
+      spec:
+        containers:
+        - image: 172.21.232.107:5000/health/patientui@sha256:8038aaaa6baf51695b9473c948210725c699d9c401a4c602f6233180a457c339
+          imagePullPolicy: Always
+          name: patientui
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - patientui
+        from:
+          kind: ImageStreamTag
+          name: patientui:latest
+          namespace: health
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    labels:
+      app: patientui
+    name: patientui
+    selfLink: /api/v1/namespaces/health/services/patientui
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: patientui
+      deploymentconfig: patientui
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: patientui
+    name: patientui
+    selfLink: /apis/image.openshift.io/v1/namespaces/health/imagestreams/patientui
+  spec:
+    lookupPolicy:
+      local: true
+  status:
+    dockerImageRepository: docker-registry.default.svc:5000/patientui
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: patientui
+    name: patientui
+    selfLink: /apis/route.openshift.io/v1/namespaces/health/routes/patientui
+  spec:
+    host: patientui-health.jp-tokcluster-5a7e2b4ab65bac806c7aaa37b3855aaaa75-0001.jp-tok.containers.appdomain.cloud
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: patientui
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress: null
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

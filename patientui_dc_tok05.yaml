@@ -1,0 +1,32 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: patientui
+spec:
+  template:
+    metadata:
+      labels:
+        name: patientui
+    spec:
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/zone: tok05
+      containers:
+      - name: patientui
+        image: patientui:latest
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+  replicas: 3
+  selector:
+    name: patientui
+  triggers:
+  - type: ConfigChange
+  - type: ImageChange
+    imageChangeParams:
+      automatic: true
+      containerNames:
+      - patientui
+      from:
+        kind: ImageStreamTag
+        name: patientui:latest
+
