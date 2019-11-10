@@ -1,5 +1,54 @@
 apiVersion: v1
 items:
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    creationTimestamp: 2019-10-14T04:17:57Z
+    labels:
+      app: patientui
+    name: patientui
+    namespace: health
+    resourceVersion: "13015296"
+    selfLink: /apis/build.openshift.io/v1/namespaces/health/buildconfigs/patientui
+    uid: 9a04c1bb-ee39-11e9-a5fa-4e5f0db33c6e
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: patientui:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: /site
+      git:
+        uri: https://github.com/daihiraoka/node-s2i-openshift.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: nodejs-10:latest
+          namespace: openshift
+      type: Source
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: U123emxJ--McRs1oI-T2
+      type: GitHub
+    - generic:
+        secret: A123fzWo-Rdurig3BJ0
+      type: Generic
+    - type: ConfigChange
+    - imageChange:
+        lastTriggeredImageID: registry.access.redhat.com/ubi7/nodejs-10@sha256:af3d44cb557bc6c40c440bfc72b2701229404388d477a1a922642d58d9852176
+      type: ImageChange
+  status:
+    lastVersion: 2
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
